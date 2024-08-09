@@ -61,7 +61,7 @@ def test_product_initialization(sample_product):
 
 def test_product_str_representation(sample_product):
     """Проверяет корректность строкового значения"""
-    assert str(sample_product) == "Test Product, 100.0 руб. Количество: 10"
+    assert str(sample_product) == "Test Product, 100.0 руб. Количество: 10 шт."
 
 
 def test_product_price_setter():
@@ -115,7 +115,7 @@ def test_category_initialization(sample_category):
 
 def test_category_str_representation(sample_category):
     """Проверяет корректность строкового значения"""
-    assert str(sample_category) == "Test Category, количество продуктов: 1"
+    assert str(sample_category) == "Test Category, количество продуктов: 10 шт."
 
 
 def test_category_add_product(sample_category, sample_product):

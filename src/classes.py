@@ -3,7 +3,7 @@ class Product:
 
     def __str__(self):
         """строковое представление объекта"""
-        return f"{self.name}, {self.price} руб. Количество: {self.quantity}"
+        return f"{self.name}, {self.price} руб. Количество: {self.quantity} шт."
 
     def __init__(self, name, description, price, quantity):
         """инициализация"""
@@ -46,6 +46,13 @@ class Product:
             product_data['quantity']
         )
 
+    def __add__(self, other):
+        """Метод для сложения продуктов"""
+        if isinstance(other, Product):
+            return self.price * self.quantity + other.price * other.quantity
+        else:
+            raise TypeError("Можно складывать только объекты класса Product")
+
 
 class Category:
     """Создание класса category"""
@@ -54,7 +61,8 @@ class Category:
 
     def __str__(self):
         """строковое представление объекта"""
-        return f"{self.name}, количество продуктов: {len(self.__products)}"
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
 
     def __init__(self, name, description, products=None):
         """инициализация"""
@@ -86,5 +94,4 @@ class Category:
     @property
     def products(self):
         """Геттер для получения списка продуктов в виде строки"""
-        return "\n".join([f"{product.name}, {product.price} руб. Количество: {product.quantity} шт." for product
-                          in self.__products])
+        return "\n".join(str(product) for product in self.__products)
