@@ -1,5 +1,5 @@
 import pytest
-from src.main import Product, Category
+from src.classes import Product, Smartphone, LawnGrass, Category
 
 
 def test_product_price_update():
@@ -129,14 +129,14 @@ def test_category_add_product(sample_category, sample_product):
 
 def test_category_add_duplicate_product(sample_category, sample_product):
     """Разделил на два теста: первый сверяет продукт"""
-    with pytest.raises(ValueError, match="Продукт находится в категории"):
+    with pytest.raises(ValueError, match="Продукт уже находится в категории"):
         sample_category.add_product(sample_product)
 
 
 def test_category_add_invalid_product(sample_category):
     """Разделил на два теста: второй проверяет корректность продукта"""
-    with pytest.raises(ValueError, match="Можно добавить только корректный продукт"):
-        sample_category.add_product("Not a product")
+    with pytest.raises(TypeError, match="Можно добавить только корректный продукт"):
+        sample_category.add_product("Некорректный продукт")
 
 
 def test_category_remove_nonexistent_product(sample_category):
@@ -158,3 +158,44 @@ def test_category_count():
     initial_count = Category.category_count
     Category("New Category", "Description")
     assert Category.category_count == initial_count + 1
+
+
+def test_smartphone_initialization():
+    """Проверяет корректность инициализации объектов класса Smartphone."""
+    smartphone = Smartphone("Test Smartphone", "Test Description",
+                            1000.0, 5, 95.0, "Test Model", 128, "Black")
+    assert smartphone.name == "Test Smartphone"
+    assert smartphone.description == "Test Description"
+    assert smartphone.price == 1000.0
+    assert smartphone.quantity == 5
+    assert smartphone.efficiency == 95.0
+    assert smartphone.model == "Test Model"
+    assert smartphone.memory == 128
+    assert smartphone.color == "Black"
+
+
+def test_smartphone_inheritance():
+    """Проверяет, что Smartphone является подклассом Product."""
+    smartphone = Smartphone("Test Smartphone", "Test Description", 1000.0,
+                            5, 95.0, "Test Model", 128, "Black")
+    assert isinstance(smartphone, Product)
+
+
+def test_lawn_grass_initialization():
+    """Проверяет корректность инициализации объектов класса LawnGrass."""
+    grass = LawnGrass("Test Grass", "Test Description", 50.0, 100,
+                      "Test Country", "7 days", "Green")
+    assert grass.name == "Test Grass"
+    assert grass.description == "Test Description"
+    assert grass.price == 50.0
+    assert grass.quantity == 100
+    assert grass.country == "Test Country"
+    assert grass.germination_period == "7 days"
+    assert grass.color == "Green"
+
+
+def test_lawn_grass_inheritance():
+    """Проверяет, что LawnGrass является подклассом Product."""
+    grass = LawnGrass("Test Grass", "Test Description", 50.0, 5,
+                      "Test Country", "7 days", "Green")
+    assert isinstance(grass, Product)

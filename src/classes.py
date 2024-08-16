@@ -1,12 +1,12 @@
 class Product:
-    """Создание класса product"""
+    """Базовый класс для продуктов"""
 
     def __str__(self):
-        """строковое представление объекта"""
+        """Строковое представление объекта"""
         return f"{self.name}, {self.price} руб. Количество: {self.quantity} шт."
 
     def __init__(self, name, description, price, quantity):
-        """инициализация"""
+        """Инициализация"""
         self.name = name
         self.description = description
         self._price = 0
@@ -21,7 +21,7 @@ class Product:
     @price.setter
     def price(self, value):
         if value <= 0:
-            print(f'Цена не может быть отрицательной или нулевой: {value}, прежнее значение:')
+            print(f'Цена не может быть отрицательной или нулевой: {value}, прежнее значение: {self._price}')
         else:
             self._price = value
 
@@ -32,7 +32,7 @@ class Product:
     @quantity.setter
     def quantity(self, value):
         if value < 0:
-            print(f'Количество не может быть отрицательным: {value}, прежнее значение:')
+            print(f'Количество не может быть отрицательным: {value}, прежнее значение: {self._quantity}')
         else:
             self._quantity = value
 
@@ -48,24 +48,44 @@ class Product:
 
     def __add__(self, other):
         """Метод для сложения продуктов"""
-        if isinstance(other, Product):
-            return self.price * self.quantity + other.price * other.quantity
-        else:
-            raise TypeError("Можно складывать только объекты класса Product")
+        if type(self) != type(other):
+            raise TypeError("Можно складывать только объекты одинакового типа")
+        return self.price * self.quantity + other.price * other.quantity
+
+
+class Smartphone(Product):
+    """Класс для смартфонов"""
+
+    def __init__(self, name, description, price, quantity, efficiency, model, memory, color):
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+
+class LawnGrass(Product):
+    """Класс для травы"""
+
+    def __init__(self, name, description, price, quantity, country, germination_period, color):
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
 
 
 class Category:
-    """Создание класса category"""
+    """Класс для категорий продуктов"""
     category_count = 0
     product_count = 0
 
     def __str__(self):
-        """строковое представление объекта"""
+        """Строковое представление объекта"""
         total_quantity = sum(product.quantity for product in self.__products)
         return f"{self.name}, количество продуктов: {total_quantity} шт."
 
     def __init__(self, name, description, products=None):
-        """инициализация"""
+        """Инициализация"""
         self.name = name
         self.description = description
         self.__products = products if products is not None else []
@@ -76,12 +96,12 @@ class Category:
     def add_product(self, product):
         """Метод для добавления продукта в категорию"""
         if not isinstance(product, Product):
-            raise ValueError("Можно добавить только корректный продукт")
+            raise TypeError("Можно добавить только корректный продукт")
         if product not in self.__products:
             self.__products.append(product)
             Category.product_count += 1
         else:
-            raise ValueError("Продукт находится в категории")
+            raise ValueError("Продукт уже находится в категории")
 
     def remove_product(self, product):
         """Метод для удаления продукта из категории"""
