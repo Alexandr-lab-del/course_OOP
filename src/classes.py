@@ -1,10 +1,17 @@
-class Product:
-    """Базовый класс для продуктов"""
+from abc import ABC, abstractmethod
 
-    def __str__(self):
-        """Строковое представление объекта"""
-        return f"{self.name}, {self.price} руб. Количество: {self.quantity} шт."
 
+class LoggingMixin:
+    """ Миксин для логирования создания объектов"""
+    def __init__(self, *args, **kwargs):
+        """Инициализация"""
+        print(f"Создан объект класса {self.__class__.__name__} с параметрами: {args}, {kwargs}")
+        super().__init__(*args, **kwargs)
+
+
+class BaseProduct(ABC):
+    """Абстрактный базовый класс для продуктов"""
+    @abstractmethod
     def __init__(self, name, description, price, quantity):
         """Инициализация"""
         self.name = name
@@ -14,12 +21,50 @@ class Product:
         self.price = price
         self.quantity = quantity
 
+    @abstractmethod
+    def __str__(self):
+        """Строковое представление объекта"""
+        pass
+
+    @property
+    @abstractmethod
+    def price(self):
+        """Геттер для цены продукта"""
+        pass
+
+    @price.setter
+    @abstractmethod
+    def price(self, value):
+        """Сеттер для цены продукта"""
+        pass
+
+    @property
+    @abstractmethod
+    def quantity(self):
+        """Геттер для количества продукта"""
+        pass
+
+    @quantity.setter
+    @abstractmethod
+    def quantity(self, value):
+        """Сеттер для количества продукта"""
+        pass
+
+
+class Product(LoggingMixin, BaseProduct):
+    """Базовый класс для продуктов"""
+    def __str__(self):
+        """Строковое представление объекта"""
+        return f"{self.name}, {self.price} руб. Количество: {self.quantity} шт."
+
     @property
     def price(self):
+        """Геттер для цены продукта"""
         return self._price
 
     @price.setter
     def price(self, value):
+        """ Сеттер для цены продукта"""
         if value <= 0:
             print(f'Цена не может быть отрицательной или нулевой: {value}, прежнее значение: {self._price}')
         else:
@@ -27,10 +72,12 @@ class Product:
 
     @property
     def quantity(self):
+        """Геттер для количества продукта"""
         return self._quantity
 
     @quantity.setter
     def quantity(self, value):
+        """Сеттер для количества продукта"""
         if value < 0:
             print(f'Количество не может быть отрицательным: {value}, прежнее значение: {self._quantity}')
         else:
@@ -55,8 +102,8 @@ class Product:
 
 class Smartphone(Product):
     """Класс для смартфонов"""
-
     def __init__(self, name, description, price, quantity, efficiency, model, memory, color):
+        """Инициализация"""
         super().__init__(name, description, price, quantity)
         self.efficiency = efficiency
         self.model = model
@@ -66,8 +113,8 @@ class Smartphone(Product):
 
 class LawnGrass(Product):
     """Класс для травы"""
-
     def __init__(self, name, description, price, quantity, country, germination_period, color):
+        """Инициализация"""
         super().__init__(name, description, price, quantity)
         self.country = country
         self.germination_period = germination_period
@@ -95,7 +142,7 @@ class Category:
 
     def add_product(self, product):
         """Метод для добавления продукта в категорию"""
-        if not isinstance(product, Product):
+        if not isinstance(product, BaseProduct):
             raise TypeError("Можно добавить только корректный продукт")
         if product not in self.__products:
             self.__products.append(product)
