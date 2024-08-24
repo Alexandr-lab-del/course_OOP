@@ -53,6 +53,12 @@ class BaseProduct(ABC):
 
 class Product(LoggingMixin, BaseProduct):
     """Базовый класс для продуктов"""
+    def __init__(self, name, description, price, quantity):
+        """Инициализация"""
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+        super().__init__(name, description, price, quantity)
+
     def __str__(self):
         """Строковое представление объекта"""
         return f"{self.name}, {self.price} руб. Количество: {self.quantity} шт."
@@ -162,3 +168,11 @@ class Category:
     def products(self):
         """Геттер для получения списка продуктов в виде строки"""
         return "\n".join(str(product) for product in self.__products)
+
+    def middle_price(self):
+        """Метод для подсчета среднего ценника всех товаров"""
+        try:
+            total_price = sum(product.price for product in self.__products)
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0

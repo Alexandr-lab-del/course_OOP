@@ -199,3 +199,16 @@ def test_lawn_grass_inheritance():
     grass = LawnGrass("Test Grass", "Test Description", 50.0, 5,
                       "Test Country", "7 days", "Green")
     assert isinstance(grass, Product)
+
+
+def test_product_init_with_zero_quantity():
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product("Тестовый продукт", "Описание", 100, 0)
+
+
+def test_product_init_with_valid_quantity():
+    product = Product("Тестовый продукт", "Описание", 100, 5)
+    assert product.name == "Тестовый продукт"
+    assert product.description == "Описание"
+    assert product.price == 100
+    assert product.quantity == 5
